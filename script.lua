@@ -98,7 +98,6 @@ end
 
 RunService.Stepped:Connect(function()
     if NoclipEnabled and Player.Character then
-        -- [FIXED]: Changed GetDescendants() to GetChildren() to prevent severe lag
         for _, part in pairs(Player.Character:GetChildren()) do
             if part:IsA("BasePart") then
                 part.CanCollide = false
@@ -118,7 +117,6 @@ local function FlingTarget(TargetPlayer)
 
     local oldPos = root.CFrame
     
-    -- [FIXED]: Replaced deprecated BodyAngularVelocity with modern AngularVelocity
     local attachment = Instance.new("Attachment", root)
     local FlingVelocity = Instance.new("AngularVelocity")
     FlingVelocity.Attachment0 = attachment
@@ -146,7 +144,6 @@ local function FlingTarget(TargetPlayer)
     if FlingVelocity then FlingVelocity:Destroy() end
     if attachment then attachment:Destroy() end
     if root then
-        -- [FIXED]: Replaced deprecated Velocity and RotVelocity
         root.AssemblyLinearVelocity = Vector3.new(0,0,0)
         root.AssemblyAngularVelocity = Vector3.new(0,0,0)
         root.CFrame = oldPos
