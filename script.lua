@@ -88,7 +88,7 @@ local function StartFlight()
                 flyBV.Velocity = Vector3.new(0, 0.1, 0)
             end
             flyBG.CFrame = cam.CFrame
-        end -- [FIXED]: Added the missing 'end' to close the while loop
+        end
         
         if flyBV then flyBV:Destroy() end
         if flyBG then flyBG:Destroy() end
