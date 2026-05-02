@@ -1,6 +1,6 @@
 # Palm-Script
 
-Palm-Script is a currently experimental Roblox script, features are below.
+Palm-Script is a currently experimental Roblox script, features below.
 
 - Fly
 - Noclip
