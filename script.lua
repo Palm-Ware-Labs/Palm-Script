@@ -88,6 +88,7 @@ local function StartFlight()
                 flyBV.Velocity = Vector3.new(0, 0.1, 0)
             end
             flyBG.CFrame = cam.CFrame
+        end -- [FIXED]: Added the missing 'end' to close the while loop
         
         if flyBV then flyBV:Destroy() end
         if flyBG then flyBG:Destroy() end
@@ -97,7 +98,8 @@ end
 
 RunService.Stepped:Connect(function()
     if NoclipEnabled and Player.Character then
-        for _, part in pairs(Player.Character:GetDescendants()) do
+        -- [FIXED]: Changed GetDescendants() to GetChildren() to prevent severe lag
+        for _, part in pairs(Player.Character:GetChildren()) do
             if part:IsA("BasePart") then
                 part.CanCollide = false
             end
@@ -116,10 +118,12 @@ local function FlingTarget(TargetPlayer)
 
     local oldPos = root.CFrame
     
-    local FlingVelocity = Instance.new("BodyAngularVelocity")
+    -- [FIXED]: Replaced deprecated BodyAngularVelocity with modern AngularVelocity
+    local attachment = Instance.new("Attachment", root)
+    local FlingVelocity = Instance.new("AngularVelocity")
+    FlingVelocity.Attachment0 = attachment
     FlingVelocity.AngularVelocity = Vector3.new(99999, 99999, 99999)
-    FlingVelocity.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
-    FlingVelocity.P = math.huge
+    FlingVelocity.MaxTorque = math.huge
     FlingVelocity.Parent = root
 
     local startTime = tick()
@@ -140,9 +144,11 @@ local function FlingTarget(TargetPlayer)
     
     connection:Disconnect()
     if FlingVelocity then FlingVelocity:Destroy() end
+    if attachment then attachment:Destroy() end
     if root then
-        root.Velocity = Vector3.new(0,0,0)
-        root.RotVelocity = Vector3.new(0,0,0)
+        -- [FIXED]: Replaced deprecated Velocity and RotVelocity
+        root.AssemblyLinearVelocity = Vector3.new(0,0,0)
+        root.AssemblyAngularVelocity = Vector3.new(0,0,0)
         root.CFrame = oldPos
     end
 end
@@ -419,6 +425,16 @@ VisualsTab:CreateToggle({
    Flag = "ESP",
    Callback = function(Value)
       ESPEnabled = Value
+      
+      if Value and #Players:GetPlayers() > 31 then
+          Rayfield:Notify({
+             Title = "ESP Limit Reached",
+             Content = "Roblox limits Highlights to 31. Some players may not be highlighted.",
+             Duration = 5,
+             Image = 4483362458,
+          })
+      end
+      
       RefreshAllESP()
    end,
 })
