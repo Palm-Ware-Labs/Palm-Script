@@ -4,33 +4,6 @@ local Window = Rayfield:CreateWindow({
    Name = "Palm-Script",
    LoadingTitle = "Palm-Script",
    LoadingSubtitle = "by Palm-Labs",
-   Theme = {
-      TextColor = Color3.fromRGB(255, 255, 255),
-      Background = Color3.fromRGB(18, 18, 20),
-      Topbar = Color3.fromRGB(24, 24, 27),
-      Shadow = Color3.fromRGB(0, 0, 0),
-      TabBackground = Color3.fromRGB(24, 24, 27),
-      TabStroke = Color3.fromRGB(39, 39, 42),
-      TabBackgroundSelected = Color3.fromRGB(255, 255, 255),
-      TabTextColor = Color3.fromRGB(161, 161, 170),
-      SelectedTabTextColor = Color3.fromRGB(24, 24, 27),
-      ElementBackground = Color3.fromRGB(24, 24, 27),
-      ElementBackgroundHover = Color3.fromRGB(39, 39, 42),
-      SecondaryElementBackground = Color3.fromRGB(24, 24, 27),
-      ElementStroke = Color3.fromRGB(39, 39, 42),
-      SecondaryElementStroke = Color3.fromRGB(39, 39, 42),
-      SliderBackground = Color3.fromRGB(39, 39, 42),
-      SliderProgress = Color3.fromRGB(255, 255, 255),
-      SliderStroke = Color3.fromRGB(48, 48, 54),
-      ToggleBackground = Color3.fromRGB(24, 24, 27),
-      ToggleEnabled = Color3.fromRGB(255, 255, 255),
-      ToggleBorders = Color3.fromRGB(39, 39, 42),
-      ToggleEnabledStroke = Color3.fromRGB(255, 255, 255),
-      ToggleEnabledOuterStroke = Color3.fromRGB(200, 200, 200),
-      InputBackground = Color3.fromRGB(24, 24, 27),
-      InputStroke = Color3.fromRGB(39, 39, 42),
-      PlaceholderColor = Color3.fromRGB(161, 161, 170)
-   },
    ConfigurationSaving = {
       Enabled = true,
       FolderName = "PalmScript",
@@ -115,7 +88,6 @@ local function StartFlight()
                 flyBV.Velocity = Vector3.new(0, 0.1, 0)
             end
             flyBG.CFrame = cam.CFrame
-        end
         
         if flyBV then flyBV:Destroy() end
         if flyBG then flyBG:Destroy() end
@@ -294,7 +266,6 @@ MainTab:CreateToggle({
               end
           end
       else
-        
           local char = Player.Character
           if char and char:FindFirstChild("Humanoid") then
               char.Humanoid.Health = 0
@@ -470,8 +441,9 @@ VisualsTab:CreateToggle({
    end,
 })
 
+-- Info Section
 InfoTab:CreateLabel("Palm-Script v1.0")
-InfoTab:CreateLabel("Created by Palm-Labs, the creator of Palm-Ware.")
+InfoTab:CreateLabel("Created by Palm-Labs.")
 
 Player.CharacterAdded:Connect(function(NewChar)
     task.wait(0.5)
@@ -494,7 +466,7 @@ Player.CharacterAdded:Connect(function(NewChar)
     if FlyEnabled then
         StartFlight()
     end
-
+    
     if not InvincibilityEnabled then
         workspace.CurrentCamera.CameraSubject = hum
     end
