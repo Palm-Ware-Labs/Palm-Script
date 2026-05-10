@@ -22,6 +22,7 @@ end
 local Icons = {
     Chevron = "rbxassetid://10709790948", 
     Close = "rbxassetid://73433330733472",
+    PalmTree = "rbxassetid://13208581845" 
 }
 
 local UI = {}
