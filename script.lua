@@ -20,9 +20,8 @@ local function tween(obj, props, time)
 end
 
 local Icons = {
-    Chevron = "rbxassetid://10709790948", 
     Close = "rbxassetid://73433330733472",
-    PalmTree = "rbxassetid://13208581845" 
+    PalmTree = "rbxassetid://90776422052941" 
 }
 
 local UI = {}
