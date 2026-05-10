@@ -20,14 +20,12 @@ local function tween(obj, props, time)
 end
 
 local Icons = {
-    Movement = "rbxassetid://10732502695", 
     Players = "rbxassetid://10747373176", 
     Visuals = "rbxassetid://10709792166", 
     Misc = "rbxassetid://10723344270", 
     NDS = "rbxassetid://10723345755", 
-    Credits = "rbxassetid://10723345518", 
     Chevron = "rbxassetid://10709790948", 
-    Close = "rbxassetid://10747383819" 
+    Close = "rbxassetid://73433330733472" 
 }
 
 local UI = {}
