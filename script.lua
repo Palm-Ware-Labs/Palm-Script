@@ -20,12 +20,8 @@ local function tween(obj, props, time)
 end
 
 local Icons = {
-    Players = "rbxassetid://10747373176", 
-    Visuals = "rbxassetid://10709792166", 
-    Misc = "rbxassetid://10723344270", 
-    NDS = "rbxassetid://10723345755", 
     Chevron = "rbxassetid://10709790948", 
-    Close = "rbxassetid://73433330733472" 
+    Close = "rbxassetid://73433330733472",
 }
 
 local UI = {}
@@ -57,7 +53,18 @@ function UI:CreateWindow(config)
     create("UICorner", {Parent = MainFrame, CornerRadius = UDim.new(0, 10)})
 
     local TopBar = create("Frame", {Parent = MainFrame, Size = UDim2.new(1, 0, 0, 40), BackgroundTransparency = 1})
-    local Title = create("TextLabel", {Parent = TopBar, Size = UDim2.new(0, 200, 1, 0), Position = UDim2.new(0, 15, 0, 0), BackgroundTransparency = 1, Text = config.Name, Font = Enum.Font.GothamBold, TextSize = 16, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left})
+    
+    local Title = create("TextLabel", {
+        Parent = TopBar, 
+        Size = UDim2.new(0, 100, 1, 0), 
+        Position = UDim2.new(0, 15, 0, 0), -- Moved back to X=15
+        BackgroundTransparency = 1, 
+        Text = config.Name, 
+        Font = Enum.Font.GothamBold, 
+        TextSize = 16, 
+        TextColor3 = UI.Theme.Text, 
+        TextXAlignment = Enum.TextXAlignment.Left
+    })
     
     local CloseBtn = create("ImageButton", {
         Parent = TopBar,
@@ -67,30 +74,39 @@ function UI:CreateWindow(config)
         Image = Icons.Close,
         ImageColor3 = UI.Theme.SubText
     })
-    CloseBtn.MouseEnter:Connect(function() tween(CloseBtn, {ImageColor3 = Color3.fromRGB(255, 80, 80)}) end)
-    CloseBtn.MouseLeave:Connect(function() tween(CloseBtn, {ImageColor3 = UI.Theme.SubText}) end)
-    CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
     local TabContainer = create("ScrollingFrame", {
-        Parent = MainFrame, 
-        Size = UDim2.new(1, -20, 0, 40), 
-        Position = UDim2.new(0, 10, 0, 40), 
-        BackgroundTransparency = 1, 
+        Parent = TopBar, 
+        Size = UDim2.new(1, -185, 0, 28), 
+        Position = UDim2.new(0, 145, 0.5, -14), 
+        BackgroundColor3 = UI.Theme.Container,
+        BackgroundTransparency = 0, 
         ScrollBarThickness = 0, 
         CanvasSize = UDim2.new(0, 0, 0, 0), 
         AutomaticCanvasSize = Enum.AutomaticSize.X, 
         ScrollingDirection = Enum.ScrollingDirection.X
     })
+    create("UICorner", {Parent = TabContainer, CornerRadius = UDim.new(0, 6)})
+
     create("UIListLayout", {
         Parent = TabContainer, 
         FillDirection = Enum.FillDirection.Horizontal, 
         SortOrder = Enum.SortOrder.LayoutOrder, 
-        Padding = UDim.new(0, 8), 
+        Padding = UDim.new(0, 4), 
         VerticalAlignment = Enum.VerticalAlignment.Center
     })
-    create("UIPadding", {Parent = TabContainer, PaddingLeft = UDim.new(0, 5), PaddingRight = UDim.new(0, 5)})
+    create("UIPadding", {Parent = TabContainer, PaddingLeft = UDim.new(0, 4), PaddingRight = UDim.new(0, 4)})
 
-    local ContentContainer = create("Frame", {Parent = MainFrame, Size = UDim2.new(1, -20, 1, -90), Position = UDim2.new(0, 10, 0, 85), BackgroundTransparency = 1})
+    local ContentContainer = create("Frame", {
+        Parent = MainFrame, 
+        Size = UDim2.new(1, -20, 1, -55), 
+        Position = UDim2.new(0, 10, 0, 45), 
+        BackgroundTransparency = 1
+    })
+
+    CloseBtn.MouseEnter:Connect(function() tween(CloseBtn, {ImageColor3 = Color3.fromRGB(255, 80, 80)}) end)
+    CloseBtn.MouseLeave:Connect(function() tween(CloseBtn, {ImageColor3 = UI.Theme.SubText}) end)
+    CloseBtn.MouseButton1Click:Connect(function() ScreenGui:Destroy() end)
 
     local dragging, dragInput, dragStart, startPos
     TopBar.InputBegan:Connect(function(input)
@@ -111,46 +127,27 @@ function UI:CreateWindow(config)
 
     local Window = {Tabs = {}, CurrentTab = nil, ScreenGui = ScreenGui}
 
-    function Window:CreateTab(name, iconId)
+    function Window:CreateTab(name)
         local TabBtn = create("TextButton", {
             Parent = TabContainer, 
-            Size = UDim2.new(0, 0, 0, 28), 
+            Size = UDim2.new(0, 0, 1, -8), 
             AutomaticSize = Enum.AutomaticSize.X,
-            BackgroundColor3 = UI.Theme.Container, 
+            BackgroundColor3 = UI.Theme.Accent, 
+            BackgroundTransparency = 1,
             Text = "", 
             AutoButtonColor = false
         })
         create("UICorner", {Parent = TabBtn, CornerRadius = UDim.new(1, 0)}) 
-        create("UIPadding", {Parent = TabBtn, PaddingLeft = UDim.new(0, 12), PaddingRight = UDim.new(0, 16)})
+        create("UIPadding", {Parent = TabBtn, PaddingLeft = UDim.new(0, 16), PaddingRight = UDim.new(0, 16)})
         
-        create("UIListLayout", {
-            Parent = TabBtn,
-            FillDirection = Enum.FillDirection.Horizontal,
-            SortOrder = Enum.SortOrder.LayoutOrder,
-            Padding = UDim.new(0, 6),
-            VerticalAlignment = Enum.VerticalAlignment.Center,
-            HorizontalAlignment = Enum.HorizontalAlignment.Center
-        })
-
-        local TabIcon = create("ImageLabel", {
-            Parent = TabBtn,
-            Size = UDim2.new(0, 16, 0, 16),
-            BackgroundTransparency = 1,
-            Image = iconId,
-            ImageColor3 = UI.Theme.SubText,
-            LayoutOrder = 1
-        })
-
         local TabText = create("TextLabel", {
             Parent = TabBtn,
-            Size = UDim2.new(0, 0, 1, 0),
-            AutomaticSize = Enum.AutomaticSize.X,
+            Size = UDim2.new(1, 0, 1, 0),
             BackgroundTransparency = 1,
             Text = name,
             Font = Enum.Font.GothamSemibold,
             TextSize = 13,
-            TextColor3 = UI.Theme.SubText,
-            LayoutOrder = 2
+            TextColor3 = UI.Theme.SubText
         })
 
         local ContentScroll = create("ScrollingFrame", {
@@ -168,41 +165,34 @@ function UI:CreateWindow(config)
 
         TabBtn.MouseEnter:Connect(function() 
             if Window.CurrentTab ~= name then 
-                tween(TabBtn, {BackgroundColor3 = UI.Theme.Hover}) 
                 tween(TabText, {TextColor3 = UI.Theme.Text})
-                tween(TabIcon, {ImageColor3 = UI.Theme.Text})
             end 
         end)
         
         TabBtn.MouseLeave:Connect(function() 
             if Window.CurrentTab ~= name then 
-                tween(TabBtn, {BackgroundColor3 = UI.Theme.Container}) 
                 tween(TabText, {TextColor3 = UI.Theme.SubText})
-                tween(TabIcon, {ImageColor3 = UI.Theme.SubText})
             end 
         end)
 
         TabBtn.MouseButton1Click:Connect(function()
             for tName, tData in pairs(Window.Tabs) do
                 tData.Content.Visible = false
-                tween(tData.Btn, {BackgroundColor3 = UI.Theme.Container})
+                tween(tData.Btn, {BackgroundTransparency = 1})
                 tween(tData.Text, {TextColor3 = UI.Theme.SubText})
-                tween(tData.Icon, {ImageColor3 = UI.Theme.SubText})
             end
             ContentScroll.Visible = true
-            tween(TabBtn, {BackgroundColor3 = UI.Theme.Accent})
+            tween(TabBtn, {BackgroundTransparency = 0})
             tween(TabText, {TextColor3 = UI.Theme.Main})
-            tween(TabIcon, {ImageColor3 = UI.Theme.Main})
             Window.CurrentTab = name
         end)
 
-        Window.Tabs[name] = {Btn = TabBtn, Text = TabText, Icon = TabIcon, Content = ContentScroll}
+        Window.Tabs[name] = {Btn = TabBtn, Text = TabText, Content = ContentScroll}
 
         if not Window.CurrentTab then 
             ContentScroll.Visible = true
-            TabBtn.BackgroundColor3 = UI.Theme.Accent
+            TabBtn.BackgroundTransparency = 0
             TabText.TextColor3 = UI.Theme.Main
-            TabIcon.ImageColor3 = UI.Theme.Main
             Window.CurrentTab = name
         end
 
@@ -210,6 +200,198 @@ function UI:CreateWindow(config)
         function Tab:CreateSection(secName)
             local SecFrame = create("Frame", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 20), BackgroundTransparency = 1})
             create("TextLabel", {Parent = SecFrame, Size = UDim2.new(1, -25, 1, 0), Position = UDim2.new(0, 5, 0, 0), BackgroundTransparency = 1, Text = secName, Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = UI.Theme.Accent, TextXAlignment = Enum.TextXAlignment.Left})
+        end
+
+        function Tab:CreateInput(iConfig)
+            local InpFrame = create("Frame", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 40), BackgroundColor3 = UI.Theme.Container})
+            create("UICorner", {Parent = InpFrame, CornerRadius = UDim.new(0, 6)})
+            
+            create("TextLabel", {Parent = InpFrame, Size = UDim2.new(0.4, 0, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Text = iConfig.Name, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left})
+            
+            local TextBox = create("TextBox", {Parent = InpFrame, Size = UDim2.new(0.5, -20, 0, 30), Position = UDim2.new(0.5, 10, 0.5, -15), BackgroundColor3 = UI.Theme.Element, Text = "", PlaceholderText = iConfig.Placeholder or "", Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = UI.Theme.Text, ClearTextOnFocus = false})
+            create("UICorner", {Parent = TextBox, CornerRadius = UDim.new(0, 4)})
+            
+            TextBox.FocusLost:Connect(function()
+                if iConfig.Callback then iConfig.Callback(TextBox.Text) end
+            end)
+        end
+
+        function Tab:CreateDashboard()
+            local HeaderFrame = create("Frame", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 80), BackgroundColor3 = UI.Theme.Container})
+            create("UICorner", {Parent = HeaderFrame, CornerRadius = UDim.new(0, 6)})
+            
+            local PlaceLabel = create("TextLabel", {Parent = HeaderFrame, Size = UDim2.new(0.5, 0, 0.33, 0), Position = UDim2.new(0, 10, 0, 5), BackgroundTransparency = 1, Text = "Place ID: " .. game.PlaceId, Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left})
+            
+            local PlayerCountLabel = create("TextLabel", {Parent = HeaderFrame, Size = UDim2.new(0.5, 0, 0.33, 0), Position = UDim2.new(0, 10, 0.33, 0), BackgroundTransparency = 1, Text = "Players: " .. #Players:GetPlayers(), Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Left})
+            
+            local UptimeLabel = create("TextLabel", {Parent = HeaderFrame, Size = UDim2.new(0.5, 0, 0.33, 0), Position = UDim2.new(0, 10, 0.66, 0), BackgroundTransparency = 1, Text = "Uptime: 00:00:00", Font = Enum.Font.GothamBold, TextSize = 14, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Left})
+
+            task.spawn(function()
+                while task.wait(1) do
+                    if not UptimeLabel.Parent then break end
+                    local diff = math.floor(workspace.DistributedGameTime)
+                    local h = math.floor(diff / 3600)
+                    local m = math.floor((diff % 3600) / 60)
+                    local s = diff % 60
+                    UptimeLabel.Text = string.format("Uptime: %02d:%02d:%02d", h, m, s)
+                end
+            end)
+            
+            Players.PlayerAdded:Connect(function() PlayerCountLabel.Text = "Players: " .. #Players:GetPlayers() end)
+            Players.PlayerRemoving:Connect(function() PlayerCountLabel.Text = "Players: " .. #Players:GetPlayers() end)
+
+            create("TextLabel", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 20), BackgroundTransparency = 1, Text = "Friends Playing", Font = Enum.Font.GothamBold, TextSize = 12, TextColor3 = UI.Theme.Accent, TextXAlignment = Enum.TextXAlignment.Left})
+            
+            local FriendsContainer = create("Frame", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1})
+            create("UIListLayout", {Parent = FriendsContainer, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6)})
+
+            local function updateFriends()
+                for _, child in ipairs(FriendsContainer:GetChildren()) do
+                    if child:IsA("Frame") then child:Destroy() end
+                end
+
+                local success, friends = pcall(function() return Player:GetFriendsOnline(200) end)
+                local foundPlaying = false
+
+                if success and friends then
+                    for _, friend in ipairs(friends) do
+                        if friend.LocationType == 4 then 
+                            foundPlaying = true
+                            local fRow = create("Frame", {Parent = FriendsContainer, Size = UDim2.new(1, 0, 0, 40), BackgroundColor3 = UI.Theme.Container})
+                            create("UICorner", {Parent = fRow, CornerRadius = UDim.new(0, 6)})
+
+                            create("TextLabel", {Parent = fRow, Size = UDim2.new(0.4, 0, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Text = friend.UserName, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd})
+                            create("TextLabel", {Parent = fRow, Size = UDim2.new(0.4, -20, 1, 0), Position = UDim2.new(0.4, 10, 0, 0), BackgroundTransparency = 1, Text = friend.LastLocation, Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd})
+
+                            local JoinBtn = create("TextButton", {Parent = fRow, Size = UDim2.new(0, 65, 0, 26), Position = UDim2.new(1, -75, 0.5, -13), BackgroundColor3 = UI.Theme.Element, Text = "Join", Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = UI.Theme.Text})
+                            create("UICorner", {Parent = JoinBtn, CornerRadius = UDim.new(0, 4)})
+                            
+                            JoinBtn.MouseEnter:Connect(function() tween(JoinBtn, {BackgroundColor3 = UI.Theme.Hover}) end)
+                            JoinBtn.MouseLeave:Connect(function() tween(JoinBtn, {BackgroundColor3 = UI.Theme.Element}) end)
+
+                            JoinBtn.MouseButton1Click:Connect(function()
+                                Window:Notify({Title = "Joining", Content = "Attempting to join " .. friend.UserName .. "...", Duration = 3})
+                                local s, e = pcall(function()
+                                    TeleportService:TeleportToPlaceInstance(friend.PlaceId, friend.GameId, Player)
+                                end)
+                                if not s then
+                                    Window:Notify({Title = "Error", Content = "Failed to join: " .. tostring(e), Duration = 3})
+                                end
+                            end)
+                        end
+                    end
+                end
+
+                if not foundPlaying then
+                    local emptyRow = create("Frame", {Parent = FriendsContainer, Size = UDim2.new(1, 0, 0, 40), BackgroundColor3 = UI.Theme.Container})
+                    create("UICorner", {Parent = emptyRow, CornerRadius = UDim.new(0, 6)})
+                    create("TextLabel", {Parent = emptyRow, Size = UDim2.new(1, -20, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Text = "No friends are currently playing a game.", Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Center})
+                end
+            end
+
+            updateFriends()
+
+            local RefreshBtn = create("TextButton", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 30), BackgroundColor3 = UI.Theme.Container, Text = "Refresh Friends List", Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = UI.Theme.Text})
+            create("UICorner", {Parent = RefreshBtn, CornerRadius = UDim.new(0, 6)})
+            RefreshBtn.MouseButton1Click:Connect(updateFriends)
+        end
+
+        function Tab:CreatePlayerList()
+            local Container = create("Frame", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 0), AutomaticSize = Enum.AutomaticSize.Y, BackgroundTransparency = 1})
+            create("UIListLayout", {Parent = Container, SortOrder = Enum.SortOrder.Name, Padding = UDim.new(0, 6)})
+            
+            local function updateList()
+                for _, child in ipairs(Container:GetChildren()) do
+                    if child:IsA("Frame") then child:Destroy() end
+                end
+                for _, plr in ipairs(Players:GetPlayers()) do
+                    if plr == Player then continue end
+                    
+                    local pRow = create("Frame", {Parent = Container, Size = UDim2.new(1, 0, 0, 50), BackgroundColor3 = UI.Theme.Container, Name = plr.Name})
+                    create("UICorner", {Parent = pRow, CornerRadius = UDim.new(0, 6)})
+                    
+                    local pfp = create("ImageLabel", {Parent = pRow, Size = UDim2.new(0, 40, 0, 40), Position = UDim2.new(0, 5, 0.5, -20), BackgroundColor3 = UI.Theme.Element})
+                    create("UICorner", {Parent = pfp, CornerRadius = UDim.new(0, 6)})
+                    task.spawn(function()
+                        local content = Players:GetUserThumbnailAsync(plr.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
+                        pfp.Image = content
+                    end)
+                    
+                    create("TextLabel", {Parent = pRow, Size = UDim2.new(0, 150, 1, 0), Position = UDim2.new(0, 55, 0, 0), BackgroundTransparency = 1, Text = plr.Name, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left, TextTruncate = Enum.TextTruncate.AtEnd})
+                    
+                    local HealthLabel = create("TextLabel", {Parent = pRow, Size = UDim2.new(0, 60, 1, 0), Position = UDim2.new(0, 205, 0, 0), BackgroundTransparency = 1, Text = "N/A HP", Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Left})
+                    
+                    task.spawn(function()
+                        while pRow.Parent do
+                            if plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                                local hp = math.floor(plr.Character.Humanoid.Health)
+                                local maxHp = math.floor(plr.Character.Humanoid.MaxHealth)
+                                HealthLabel.Text = hp .. " / " .. maxHp .. " HP"
+                                if hp <= 0 then HealthLabel.TextColor3 = Color3.fromRGB(255, 80, 80)
+                                elseif hp < (maxHp / 2) then HealthLabel.TextColor3 = Color3.fromRGB(255, 200, 80)
+                                else HealthLabel.TextColor3 = Color3.fromRGB(80, 255, 80) end
+                            else
+                                HealthLabel.Text = "No Char"
+                                HealthLabel.TextColor3 = UI.Theme.SubText
+                            end
+                            task.wait(0.5)
+                        end
+                    end)
+
+                    local ActionsFrame = create("Frame", {Name = "Actions", Parent = pRow, Size = UDim2.new(0, 210, 1, 0), Position = UDim2.new(1, -215, 0, 0), BackgroundTransparency = 1})
+                    create("UIListLayout", {Parent = ActionsFrame, FillDirection = Enum.FillDirection.Horizontal, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 6), HorizontalAlignment = Enum.HorizontalAlignment.Right, VerticalAlignment = Enum.VerticalAlignment.Center})
+                    
+                    local function createActionBtn(name, btnName, callback)
+                        local btn = create("TextButton", {Name = btnName, Parent = ActionsFrame, Size = UDim2.new(0, 65, 0, 30), BackgroundColor3 = UI.Theme.Element, Text = name, Font = Enum.Font.Gotham, TextSize = 12, TextColor3 = UI.Theme.Text, AutoButtonColor = false})
+                        create("UICorner", {Parent = btn, CornerRadius = UDim.new(0, 4)})
+                        btn.MouseEnter:Connect(function() tween(btn, {BackgroundColor3 = UI.Theme.Hover}) end)
+                        btn.MouseLeave:Connect(function() tween(btn, {BackgroundColor3 = UI.Theme.Element}) end)
+                        btn.MouseButton1Click:Connect(function() callback(btn) end)
+                        return btn
+                    end
+                    
+                    createActionBtn("Teleport", "TeleportBtn", function()
+                        if plr and plr.Character and plr.Character:FindFirstChild("HumanoidRootPart") and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+                            Player.Character.HumanoidRootPart.CFrame = plr.Character.HumanoidRootPart.CFrame
+                        end
+                    end)
+                    
+                    local currentSubject = workspace.CurrentCamera.CameraSubject
+                    local isSpectating = currentSubject and (currentSubject == plr.Character or (plr.Character and currentSubject:IsDescendantOf(plr.Character)))
+                    local initialSpecText = isSpectating and "Unspectate" or "Spectate"
+
+                    createActionBtn(initialSpecText, "SpectateBtn", function(btn)
+                        if btn.Text == "Spectate" then
+                            if plr and plr.Character and plr.Character:FindFirstChild("Humanoid") then
+                                workspace.CurrentCamera.CameraSubject = plr.Character.Humanoid
+                                for _, otherRow in ipairs(Container:GetChildren()) do
+                                    if otherRow:IsA("Frame") then
+                                        local acts = otherRow:FindFirstChild("Actions")
+                                        if acts then
+                                            local sBtn = acts:FindFirstChild("SpectateBtn")
+                                            if sBtn then sBtn.Text = "Spectate" end
+                                        end
+                                    end
+                                end
+                                btn.Text = "Unspectate"
+                            end
+                        else
+                            if Player.Character and Player.Character:FindFirstChild("Humanoid") then
+                                workspace.CurrentCamera.CameraSubject = Player.Character.Humanoid
+                            end
+                            btn.Text = "Spectate"
+                        end
+                    end)
+                    
+                    createActionBtn("Fling", "FlingBtn", function()
+                        if plr then _G.FlingTargetRef(plr) end
+                    end)
+                end
+            end
+            
+            updateList()
+            Players.PlayerAdded:Connect(updateList)
+            Players.PlayerRemoving:Connect(updateList)
         end
 
         function Tab:CreateToggle(tConfig)
@@ -288,63 +470,6 @@ function UI:CreateWindow(config)
             create("TextLabel", {Parent = LblFrame, Size = UDim2.new(1, -20, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Text = text, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Left})
         end
 
-        function Tab:CreateDropdown(dConfig)
-            local DropFrame = create("Frame", {Parent = ContentScroll, Size = UDim2.new(1, 0, 0, 40), BackgroundColor3 = UI.Theme.Container, ClipsDescendants = true})
-            create("UICorner", {Parent = DropFrame, CornerRadius = UDim.new(0, 6)})
-            local MainBtn = create("TextButton", {Parent = DropFrame, Size = UDim2.new(1, 0, 0, 40), BackgroundTransparency = 1, Text = ""})
-            
-            create("TextLabel", {Parent = MainBtn, Size = UDim2.new(1, -40, 1, 0), Position = UDim2.new(0, 10, 0, 0), BackgroundTransparency = 1, Text = dConfig.Name, Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left})
-            
-            local SelectedText = create("TextLabel", {Parent = MainBtn, Size = UDim2.new(1, -30, 1, 0), Position = UDim2.new(0, 0, 0, 0), BackgroundTransparency = 1, Text = "", Font = Enum.Font.Gotham, TextSize = 14, TextColor3 = UI.Theme.SubText, TextXAlignment = Enum.TextXAlignment.Right})
-            
-            local Chevron = create("ImageLabel", {Parent = MainBtn, Size = UDim2.new(0, 16, 0, 16), Position = UDim2.new(1, -26, 0.5, -8), BackgroundTransparency = 1, Image = Icons.Chevron, ImageColor3 = UI.Theme.SubText})
-
-            local ScrollContainer = create("ScrollingFrame", {Parent = DropFrame, Size = UDim2.new(1, -10, 1, -45), Position = UDim2.new(0, 5, 0, 40), BackgroundTransparency = 1, ScrollBarThickness = 2, AutomaticCanvasSize = Enum.AutomaticSize.Y, CanvasSize = UDim2.new(0, 0, 0, 0)})
-            create("UIListLayout", {Parent = ScrollContainer, SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4)})
-            
-            local expanded = false
-            MainBtn.MouseButton1Click:Connect(function()
-                expanded = not expanded
-                tween(Chevron, {Rotation = expanded and 180 or 0})
-                tween(DropFrame, {Size = expanded and UDim2.new(1, 0, 0, 150) or UDim2.new(1, 0, 0, 40)})
-            end)
-
-            local drop = {}
-            function drop:Refresh(options)
-                for _, v in pairs(ScrollContainer:GetChildren()) do if v:IsA("TextButton") then v:Destroy() end end
-                for _, opt in ipairs(options) do
-                    local OptBtn = create("TextButton", {Parent = ScrollContainer, Size = UDim2.new(1, 0, 0, 30), BackgroundColor3 = UI.Theme.Element, Text = "", AutoButtonColor = false})
-                    create("UICorner", {Parent = OptBtn, CornerRadius = UDim.new(0, 4)})
-                    
-                    local pl = Players:FindFirstChild(opt)
-                    local padLeft = 10
-                    if pl then
-                        local pfp = create("ImageLabel", {Parent = OptBtn, Size = UDim2.new(0, 20, 0, 20), Position = UDim2.new(0, 5, 0.5, -10), BackgroundTransparency = 1})
-                        create("UICorner", {Parent = pfp, CornerRadius = UDim.new(1, 0)})
-                        task.spawn(function()
-                            local content = Players:GetUserThumbnailAsync(pl.UserId, Enum.ThumbnailType.HeadShot, Enum.ThumbnailSize.Size48x48)
-                            pfp.Image = content
-                        end)
-                        padLeft = 30
-                    end
-                    
-                    create("TextLabel", {Parent = OptBtn, Size = UDim2.new(1, -padLeft, 1, 0), Position = UDim2.new(0, padLeft, 0, 0), BackgroundTransparency = 1, Text = opt, Font = Enum.Font.Gotham, TextSize = 13, TextColor3 = UI.Theme.Text, TextXAlignment = Enum.TextXAlignment.Left})
-                    
-                    OptBtn.MouseEnter:Connect(function() tween(OptBtn, {BackgroundColor3 = UI.Theme.Hover}) end)
-                    OptBtn.MouseLeave:Connect(function() tween(OptBtn, {BackgroundColor3 = UI.Theme.Element}) end)
-                    OptBtn.MouseButton1Click:Connect(function()
-                        SelectedText.Text = opt
-                        expanded = false
-                        tween(Chevron, {Rotation = 0})
-                        tween(DropFrame, {Size = UDim2.new(1, 0, 0, 40)})
-                        if dConfig.Callback then dConfig.Callback({opt}) end
-                    end)
-                end
-            end
-            drop:Refresh(dConfig.Options or {})
-            return drop
-        end
-
         return Tab
     end
 
@@ -385,16 +510,8 @@ local NoclipEnabled = false
 local InvincibilityEnabled = false
 local ESPEnabled = false 
 local ESPInstances = {} 
-local SelectedPlayer = nil
 local flyBV, flyBG 
 local AutoRejoinEnabled = false
-
-local PfpGui = create("ScreenGui", {Name = "PalmPfpGui", Parent = pcall(function() return CoreGui.Name end) and CoreGui or Player:WaitForChild("PlayerGui"), ResetOnSpawn = false}) 
-local PfpFrame = create("Frame", {Parent = PfpGui, Size = UDim2.new(0, 150, 0, 150), Position = UDim2.new(1, -170, 0.5, -75), BackgroundColor3 = Color3.fromRGB(30, 30, 30), BorderSizePixel = 0, Visible = false}) 
-create("UICorner", {Parent = PfpFrame, CornerRadius = UDim.new(0, 10)}) 
-local PfpImage = create("ImageLabel", {Parent = PfpFrame, Size = UDim2.new(1, -10, 1, -10), Position = UDim2.new(0, 5, 0, 5), BackgroundTransparency = 1, Image = ""}) 
-create("UICorner", {Parent = PfpImage, CornerRadius = UDim.new(0, 10)}) 
-local PfpLabel = create("TextLabel", {Parent = PfpFrame, Size = UDim2.new(1, 0, 0, 20), Position = UDim2.new(0, 0, 1, 5), BackgroundTransparency = 1, Text = "Selected Player", TextColor3 = Color3.fromRGB(255, 255, 255), Font = Enum.Font.GothamBold, TextSize = 12})
 
 local function StopFlight() 
     if flyBV then flyBV:Destroy() flyBV = nil end 
@@ -479,6 +596,7 @@ local function FlingTarget(TargetPlayer)
         root.CFrame = oldPos 
     end 
 end
+_G.FlingTargetRef = FlingTarget 
 
 local function RemoveESP(plr) 
     if ESPInstances[plr] then 
@@ -518,14 +636,6 @@ Players.PlayerAdded:Connect(function(p)
 end)
 Players.PlayerRemoving:Connect(function(p) RemoveESP(p) end)
 
-local function GetPlayerNames() 
-    local names = {} 
-    for _, p in pairs(Players:GetPlayers()) do 
-        if p ~= Player then table.insert(names, p.Name) end 
-    end 
-    return names 
-end
-
 Player.Idled:Connect(function() 
     VirtualUser:Button2Down(Vector2.new(0,0), workspace.CurrentCamera.CFrame) 
     task.wait(1)
@@ -538,16 +648,34 @@ GuiService.ErrorMessageChanged:Connect(function()
     end
 end)
 
--- Main Tabs
-local MainTab = Window:CreateTab("Movement", Icons.Movement) 
-local PlayersTab = Window:CreateTab("Players", Icons.Players) 
-local VisualsTab = Window:CreateTab("Visuals", Icons.Visuals) 
-local MiscTab = Window:CreateTab("Misc", Icons.Misc) 
-local NDSTab = game.PlaceId == 189707 and Window:CreateTab("NDS", Icons.NDS) or nil 
-local InfoTab = Window:CreateTab("Credits", Icons.Credits)
+-- Main Tabs Setup
+local DashboardTab = Window:CreateTab("Dashboard")
+local PlayersTab = Window:CreateTab("Players") 
+local VisualsTab = Window:CreateTab("Visuals") 
+local MiscTab = Window:CreateTab("Misc") 
+local NDSTab = game.PlaceId == 189707 and Window:CreateTab("NDS") or nil 
 
-MainTab:CreateSection("Character Physics") 
-MainTab:CreateToggle({Name = "God Mode", CurrentValue = false, Callback = function(Value) 
+DashboardTab:CreateSection("Server Overview")
+DashboardTab:CreateDashboard()
+
+PlayersTab:CreateSection("Player List")
+PlayersTab:CreatePlayerList()
+
+VisualsTab:CreateSection("Player ESP") 
+VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Callback = function(Value) 
+    ESPEnabled = Value
+    RefreshAllESP() 
+end}) 
+
+VisualsTab:CreateSection("Environment")
+VisualsTab:CreateToggle({Name = "Fullbright", CurrentValue = false, Callback = function(Value) 
+    game:GetService("Lighting").Brightness = Value and 2 or 1
+    game:GetService("Lighting").ClockTime = Value and 14 or 12
+    game:GetService("Lighting").GlobalShadows = not Value 
+end})
+
+MiscTab:CreateSection("Character Physics") 
+MiscTab:CreateToggle({Name = "God Mode", CurrentValue = false, Callback = function(Value) 
     InvincibilityEnabled = Value 
     if Value then 
         local char = Player.Character 
@@ -571,14 +699,14 @@ MainTab:CreateToggle({Name = "God Mode", CurrentValue = false, Callback = functi
     end 
 end}) 
 
-MainTab:CreateSlider({Name = "WalkSpeed", Range = {16, 500}, Increment = 1, Suffix = "Speed", CurrentValue = 16, Callback = function(Value) 
+MiscTab:CreateSlider({Name = "WalkSpeed", Range = {16, 500}, Increment = 1, Suffix = "Speed", CurrentValue = 16, Callback = function(Value) 
     SpeedValue = Value 
     if Player.Character and Player.Character:FindFirstChild("Humanoid") then
         Player.Character.Humanoid.WalkSpeed = Value 
     end 
 end}) 
 
-MainTab:CreateSlider({Name = "Jump Power", Range = {50, 1000}, Increment = 1, Suffix = "Power", CurrentValue = 50, Callback = function(Value) 
+MiscTab:CreateSlider({Name = "Jump Power", Range = {50, 1000}, Increment = 1, Suffix = "Power", CurrentValue = 50, Callback = function(Value) 
     JumpValue = Value 
     if Player.Character and Player.Character:FindFirstChild("Humanoid") then
         Player.Character.Humanoid.UseJumpPower = true
@@ -586,89 +714,23 @@ MainTab:CreateSlider({Name = "Jump Power", Range = {50, 1000}, Increment = 1, Su
     end 
 end})
 
-MainTab:CreateSection("Advanced Movement") 
-MainTab:CreateToggle({Name = "Enable Flight", CurrentValue = false, Callback = function(Value) 
+MiscTab:CreateSection("Advanced Movement") 
+MiscTab:CreateToggle({Name = "Enable Flight", CurrentValue = false, Callback = function(Value) 
     FlyEnabled = Value 
     if Value then StartFlight() else StopFlight() end 
 end}) 
 
-MainTab:CreateSlider({Name = "Flight Speed", Range = {10, 300}, Increment = 5, Suffix = "Speed", CurrentValue = 50, Callback = function(Value) 
+MiscTab:CreateSlider({Name = "Flight Speed", Range = {10, 300}, Increment = 5, Suffix = "Speed", CurrentValue = 50, Callback = function(Value) 
     FlySpeed = Value 
 end})
 
-MainTab:CreateToggle({Name = "Noclip", CurrentValue = false, Callback = function(Value) 
+MiscTab:CreateToggle({Name = "Noclip", CurrentValue = false, Callback = function(Value) 
     NoclipEnabled = Value 
     if not Value and Player.Character then 
         for _, part in pairs(Player.Character:GetDescendants()) do 
             if part:IsA("BasePart") then part.CanCollide = true end 
         end 
     end 
-end})
-
-PlayersTab:CreateSection("Target Selection") 
-local PlayerDropdown = PlayersTab:CreateDropdown({Name = "Select Player", Options = GetPlayerNames(), Callback = function(Option) 
-    SelectedPlayer = Option[1] 
-    if SelectedPlayer then
-        local target = Players:FindFirstChild(SelectedPlayer) 
-        if target then
-            task.spawn(function() 
-                local content = Players:GetUserThumbnailAsync(target.UserId, Enum.ThumbnailType.AvatarBust, Enum.ThumbnailSize.Size420x420) 
-                PfpImage.Image = content 
-                PfpLabel.Text = target.Name 
-                PfpFrame.Visible = true 
-            end) 
-        end 
-    else 
-        PfpFrame.Visible = false 
-    end
-end})
-
-Players.PlayerAdded:Connect(function() PlayerDropdown:Refresh(GetPlayerNames()) end) 
-Players.PlayerRemoving:Connect(function() PlayerDropdown:Refresh(GetPlayerNames()) end)
-
-PlayersTab:CreateSection("Actions") 
-PlayersTab:CreateButton({Name = "Teleport To", Callback = function() 
-    if SelectedPlayer then 
-        local target = Players:FindFirstChild(SelectedPlayer) 
-        if target and target.Character and target.Character:FindFirstChild("HumanoidRootPart") and Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
-            Player.Character.HumanoidRootPart.CFrame = target.Character.HumanoidRootPart.CFrame 
-        end 
-    end 
-end})
-
-PlayersTab:CreateButton({Name = "Spectate", Callback = function() 
-    if SelectedPlayer then 
-        local target = Players:FindFirstChild(SelectedPlayer) 
-        if target and target.Character and target.Character:FindFirstChild("Humanoid") then
-            workspace.CurrentCamera.CameraSubject = target.Character.Humanoid 
-        end 
-    end 
-end})
-
-PlayersTab:CreateButton({Name = "Unspectate", Callback = function() 
-    if Player.Character and Player.Character:FindFirstChild("Humanoid") then
-        workspace.CurrentCamera.CameraSubject = Player.Character.Humanoid 
-    end 
-end})
-
-PlayersTab:CreateButton({Name = "Fling Player", Callback = function() 
-    if SelectedPlayer then 
-        local target = Players:FindFirstChild(SelectedPlayer) 
-        if target then FlingTarget(target) end 
-    end 
-end})
-
-VisualsTab:CreateSection("Player ESP") 
-VisualsTab:CreateToggle({Name = "Enable ESP", CurrentValue = false, Callback = function(Value) 
-    ESPEnabled = Value
-    RefreshAllESP() 
-end}) 
-
-VisualsTab:CreateSection("Environment")
-VisualsTab:CreateToggle({Name = "Fullbright", CurrentValue = false, Callback = function(Value) 
-    game:GetService("Lighting").Brightness = Value and 2 or 1
-    game:GetService("Lighting").ClockTime = Value and 14 or 12
-    game:GetService("Lighting").GlobalShadows = not Value 
 end})
 
 MiscTab:CreateSection("Utility") 
@@ -769,9 +831,6 @@ if NDSTab then
     NDSTab:CreateSlider({Name = "Rotation Speed", Range = {1, 50}, Increment = 1, CurrentValue = 10, Callback = function(Value) SuperRingSpeed = Value end})
     NDSTab:CreateSlider({Name = "Strength", Range = {10, 300}, Increment = 5, CurrentValue = 60, Callback = function(Value) SuperRingStrength = Value end})
 end
-
-InfoTab:CreateLabel("Palm-Script v1.1") 
-InfoTab:CreateLabel("Created by Palm-Labs.")
 
 Player.CharacterAdded:Connect(function(NewChar) 
     task.wait(0.5) 
