@@ -54,10 +54,19 @@ function UI:CreateWindow(config)
 
     local TopBar = create("Frame", {Parent = MainFrame, Size = UDim2.new(1, 0, 0, 40), BackgroundTransparency = 1})
     
+    local TitleIcon = create("ImageLabel", {
+        Parent = TopBar,
+        Size = UDim2.new(0, 20, 0, 20),
+        Position = UDim2.new(0, 15, 0.5, -10),
+        BackgroundTransparency = 1,
+        Image = Icons.PalmTree,
+        ImageColor3 = UI.Theme.Text
+    })
+    
     local Title = create("TextLabel", {
         Parent = TopBar, 
         Size = UDim2.new(0, 100, 1, 0), 
-        Position = UDim2.new(0, 15, 0, 0), -- Moved back to X=15
+        Position = UDim2.new(0, 42, 0, 0), -- Shifted right to accommodate the icon
         BackgroundTransparency = 1, 
         Text = config.Name, 
         Font = Enum.Font.GothamBold, 
